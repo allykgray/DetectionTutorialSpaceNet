@@ -27,15 +27,15 @@ building 0.0 0 0.0 173.0 210.0 198.0 238.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 building 0.0 0 0.0 144.0 229.0 174.0 257.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 building 0.0 0 0.0 237.0 173.0 262.0 207.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 building 0.0 0 0.0 258.0 120.0 286.0 153.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
-</pre></code>
+</code></pre>
 
 Once this is complete all of the image and label filenames are comprised of matching numerical strings and are stored in their own directories. Path examples are in the image below in Figure 3. The train and validation folder each have a image and label directory. The channel conversion is set to RGB with PNG lossless encoding. The image dimensions and resize dimensions are also defined on this page. The image size is 439 x 406 and is resized up to 1280 x 1280. This page is accessed by going to Datasets and selecting Object Detection.
 
-![Dataset Creation in Digits](imgs/DataSetCreationPage.png)
+![Datase](imgs/DataSetCreationPage.png)
 Figure 3. Dataset creation settings in DIGITS.
 
 ## Network Configuration and Training Parameters
-The default DetectNet network configuration with some minor modifications is used for training this data. This network is comprised of a data augmentation layers for preprocessing data, modified version of the [GoogleNet](http://arxiv.org/abs/1409.4842) CNN, and post-processing layers to predict object locations. The DetectNet data transformation layers are at the beginning of the network are defined near the beginning of the network configuration. This is defined for both the train and validation data and requires information about the training data. Below is a snippet from my network of this layer for the training set. Two parameters from the default DetectNet network are changed in the code below, image_size_x, image_size_y, and crop_bboxes [do we know what this does?]. Although the image size in the dataset is 1280 x 1280, smaller dimensions 512 x 512 are entered as the image_size to enable random cropping. The main reason for this is to reduce memory usage during training. A M60 is used for this training and has 8 GB of memory, performing random cropping allowed training with larger batch sizes. The crop bounding boxes parameter is set to false. During testing, mAP did not reach a value greater than one when this is set to true.
+The default DetectNet network configuration with some minor modifications is used for training this data. This network is comprised of a data augmentation layers for preprocessing data, modified version of the [GoogleNet](http://arxiv.org/abs/1409.4842)  CNN, and post-processing layers to predict object locations. The DetectNet data transformation layers are at the beginning of the network are defined near the beginning of the network configuration. This is defined for both the train and validation data and requires information about the training data. Below is a snippet from my network of this layer for the training set. Two parameters from the default DetectNet network are changed in the code below, image_size_x, image_size_y, and crop_bboxes [do we know what this does?]. Although the image size in the dataset is 1280 x 1280, smaller dimensions 512 x 512 are entered as the image_size to enable random cropping. The main reason for this is to reduce memory usage during training. A M60 is used for this training and has 8 GB of memory, performing random cropping allowed training with larger batch sizes. The crop bounding boxes parameter is set to false. During testing, mAP did not reach a value greater than one when this is set to true.
 
 <pre></code>
 layer {
@@ -138,6 +138,7 @@ A copy of the entire network file can be downloaded [here](models/train_val.prot
 Like in the DetectNet tutorial this network is finetuned with a pretrained GoogleNet network that has been trained on the [ImageNet Large Scale Visual Recognition Competition (ILSVRC)](http://image-net.org/) 2012 dataset. The Adam solver is used with a exponential decay learning policy and initial learning rate of 1e-05 is used for training. These are entered into the DIGITS model page and can be reached by going to Models and then selecting Object Detection in the DIGITS main console page. If these values are used the mAP, recall, precision values above zero occurs within 5 epochs. Although the these metrics reach values greater than zero the loss values are still high. There is still plenty of room for improvement with the network configuration and training settings.
 
 ![Training_Parameter](imgs/LearningParams.png)
+
 Figure 4. Training parameters entered into DIGITS.
 
 ## Results
