@@ -31,8 +31,12 @@ building 0.0 0 0.0 258.0 120.0 286.0 153.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 
 Once this is complete all of the image and label filenames are comprised of matching numerical strings and are stored in their own directories. Path examples are in the image below in Figure 3. The train and validation folders each have a image and label directory. The channel conversion is set to RGB with PNG lossless encoding. The image dimensions and resize dimensions are also defined on this page. The image size is 439 x 406 and is resized up to 1280 x 1280. This page is accessed by going to Datasets and selecting Object Detection.
 
-![Datase](imgs/DataSetCreationPage.png)
+![Dataset](imgs/DataSetCreationPage.png)
 Figure 3. Dataset creation settings in DIGITS.
+
+## Object Detection Maximum
+At the time this work was performed, a limit to the number of objects that can be in each input image is present. This is set to 50 but many of the SpaceNet images contain more than 350 buildings. To account for this the parameter MAX_BOXES is increased to 450. This parameter is defined in two files in CAFFE_ROOT/python/caffe/layers/detectnet,
+ clustering.py and mean_ap.py. Once this parameter is modified in both files training can begin. I performed this modification to Caffe while DIGITS was still running but no training was being performed on my hardware.
 
 ## Network Configuration and Training Parameters
 The default DetectNet network configuration with some minor modifications is used for training this data. This network is comprised of data augmentation layers for preprocessing data, modified version of the [GoogleNet](http://arxiv.org/abs/1409.4842)  CNN, and post-processing layers to predict object locations. The DetectNet data transformation layers are at the beginning of the network are defined near the beginning of the network configuration. This is defined for both the train and validation data and requires information about the training data. Below is a snippet from my network of this layer for the training set. Two parameters from the default DetectNet network are changed in the code below, image_size_x, image_size_y, and crop_bboxes. Although the image size in the dataset is 1280 x 1280, smaller dimensions 512 x 512 are entered as the image_size to enable random cropping. The main reason for this is to reduce memory usage during training. A M60 is used for this training and has 8 GB of memory, performing random cropping allowed training with larger batch sizes. The crop bounding boxes parameter (crop_bboxes) is set to false. During testing, mAP did not reach a value greater than one when this is set to true.
@@ -96,7 +100,7 @@ layer {
 
 As mentioned previously, the CNN is a modified version of GoogleNet and the output is a feature map rather than a vector that predicts a class for the overall image. The layers after the CNN are python layers and are used to predict bounding boxes based on output feature map from the CNN. These layer names and types are unchanged relative to the DetectNet's default configuration but the parameters are different. The image dimensions match this data set for each layer, 1280 x 1280, rather than the default 348 x 1248.
 
-The cluster layer requires five parameters to predict building locations. This uses the function [groupRectangles from OpenCV] (http://docs.opencv.org/2.4/modules/objdetect/doc/cascade_classification.html#grouprectangles) to generate a list of bounding boxes. To ascertain the results presented here, 0.06, 3, and 0.02 were used for the thresholds and equivalence (eps) parameters. This clusters the input rectangles using the rectangle equivalence criteria (eps) combining rectangles with similar sizes and locations. In cases where the cluster of boxes is less than the group threshold small clusters containing less than or equal to gridbox_rect_threshold are omitted. Predicted rectangles are the average of box clusters greater than this parameter. The minimum height is the last parameter provided to the cluster Python layer and is 10 in the layer section presented below.
+The cluster layer requires five parameters to predict building locations. This uses the function [groupRectangles from OpenCV](http://docs.opencv.org/2.4/modules/objdetect/doc/cascade_classification.html#grouprectangles) to generate a list of bounding boxes. To ascertain the results presented here, 0.06, 3, and 0.02 were used for the thresholds and equivalence (eps) parameters. This clusters the input rectangles using the rectangle equivalence criteria (eps) combining rectangles with similar sizes and locations. In cases where the cluster of boxes is less than the group threshold small clusters containing less than or equal to gridbox_rect_threshold are omitted. Predicted rectangles are the average of box clusters greater than this parameter. The minimum height is the last parameter provided to the cluster Python layer and is 10 in the layer section presented below.
 
 <pre><code>
 layer {
@@ -166,4 +170,4 @@ With a few changes to the DetectNet network a deep neural network can be trained
 ##References
 Redmon, J., Divvala, S., Girshick, R., and Farhadi, A. 2015. You Only Look Once: Unified, Real-Time Object Detection. arXiv [cs.CV]. http://arxiv.org/abs/1506.02640.
 
-Szegedy, C., Liu, W., Jia, Y., et al. 2014. Going Deeper with Convolutions. arXiv [cs.CV]. http://arxiv.org/abs/1409.4842. 
+Szegedy, C., Liu, W., Jia, Y., et al. 2014. Going Deeper with Convolutions. arXiv [cs.CV]. http://arxiv.org/abs/1409.4842.
