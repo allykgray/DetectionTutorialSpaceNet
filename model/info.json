@@ -1,0 +1,24 @@
+{
+    "caffe flavor": "NVIDIA",
+    "caffe version": "0.15.8",
+    "creation time": "2016-09-21 15:14:39.065854",
+    "dataset_id": "20160827-050033-4121",
+    "deploy file": "deploy.prototxt",
+    "digits version": "4.1-dev",
+    "framework": "caffe",
+    "id": "20160921-151439-edb3",
+    "image dimensions": [
+        1280,
+        1280,
+        3
+    ],
+    "job id": "20160921-151439-edb3",
+    "mean file": "mean.binaryproto",
+    "name": "1024x1024_dgaug28_fullval_origclusterapp3_thresh5_googlenet",
+    "network file": "original.prototxt",
+    "snapshot file": "snapshot_iter_142080.caffemodel",
+    "solver file": "solver.prototxt",
+    "status": "Done",
+    "train_val file": "train_val.prototxt",
+    "username": "ubuntu"
+}
