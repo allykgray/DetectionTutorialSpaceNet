@@ -161,4 +161,9 @@ If the network was learning and responses in the feature map correlated to regio
 ![Coverage Layer and Input Image](imgs/coverage_comparison_overlay.png)
 Figure 7. Coverage layer output compared to example input image.
 
-With a few changes to the DetectNet network a deep neural network can be trained to identify buildings in this dataset. This configuration is not perfect and there is room for improvement and these results can be used as a starting point for others.  
+With a few changes to the DetectNet network a deep neural network can be trained to identify buildings in this dataset. This configuration is not perfect and there is room for improvement and these results can be used as a starting point for others.
+
+##References
+Redmon, J., Divvala, S., Girshick, R., and Farhadi, A. 2015. You Only Look Once: Unified, Real-Time Object Detection. arXiv [cs.CV]. http://arxiv.org/abs/1506.02640.
+
+Szegedy, C., Liu, W., Jia, Y., et al. 2014. Going Deeper with Convolutions. arXiv [cs.CV]. http://arxiv.org/abs/1409.4842. 
